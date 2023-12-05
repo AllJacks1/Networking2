@@ -72,24 +72,38 @@
 
         <div class="messages-container">
           <!-- --- messages item ----  -->
-          <div class="message-item item">
-            <i class="fa-regular fa-circle-user profilepic"></i>
-            <div class="messeage-info">
-              <div class="message-content">
-                <p class="name">Kim Chaewon</p>
-                <div class="message">
-                  Hello, how are u? Hello, how are u?Hello, how are u?Hello,
-                  how are u?Hello, how are u?
+          <?php
+          $query = "SELECT CONCAT(c.fName, ' ', c.lName) AS fullname, m.datetime, m.msg FROM contacts c INNER JOIN msg m ON c.number = m.receiverNum WHERE m.receiverNum IS NOT NULL AND m.msgID = (SELECT MAX(msgID) FROM msg WHERE receiverNum = c.number);";
+          $result = mysqli_query($conn, $query);
+
+          if (mysqli_num_rows($result) != 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+          ?>
+              <div class="message-item item">
+                <i class="fa-regular fa-circle-user profilepic"></i>
+                <div class="messeage-info">
+                  <div class="message-content">
+                    <?php
+                    echo "<p class='name'>$row[fullname]</p>";
+
+                    // Add the message content here
+                    echo "<div class='message'>";
+                    echo $row['msg'];
+                    echo "</div>";
+                    ?>
+                    <p class="time"><?php echo $row['datetime'] ?></p>
+                  </div>
                 </div>
+                <i class="ellipsis-menu fa-solid fa-ellipsis-vertical fa-xl">
+                  <div class="more-actions">
+                    <i class="fa-regular fa-trash-can"></i><a href="">Delete</a>
+                  </div>
+                </i>
               </div>
-              <p class="time">12:30 PM</p>
-            </div>
-            <i class="ellipsis-menu fa-solid fa-ellipsis-vertical fa-xl">
-              <div class="more-actions">
-                <i class="fa-regular fa-trash-can"></i><a href="">Delete</a>
-              </div>
-            </i>
-          </div>
+          <?php
+            }
+          }
+          ?>
           <!-- --- end of messages item ----  -->
         </div>
       </div>
@@ -272,6 +286,7 @@
         <div class="table-container">
           <table>
             <!-- ----table row-----------  -->
+<<<<<<< Updated upstream
             <tr>
               <td><i class="fa-regular fa-circle-user profilepic"></i></td>
               <td>Kim Chaewon</td>
@@ -281,6 +296,33 @@
                 </button>
               </td>
             </tr>
+=======
+            <?php
+            $query = "SELECT * FROM `contacts`";
+            $result = mysqli_query($conn, $query);
+
+            if (mysqli_num_rows($result) != 0) {
+              while ($row = mysqli_fetch_assoc($result)) {
+                $contactName = $row['fName'] . " " . $row['lName'];
+            ?><tr data-contactid="<?php echo $contactName; ?>">
+                  <td><i class="fa-regular fa-circle-user profilepic"></i></td>
+                  <td><?php
+                      echo $contactName;
+                      ?></td>
+                  <td>
+                    <input type="text" id="number" name="number" value="<?php echo $row['number']; ?>">
+                  </td>
+                  <td>
+                    <button class="button add-contact" , onclick="addContactNumber('<?= $contactName ?>')">
+                      <i class="fa-solid fa-plus fa-sm"></i>
+                    </button>
+                  </td>
+                </tr>
+            <?php
+              }
+            }
+            ?>
+>>>>>>> Stashed changes
             <!-- -------end of table row-------  -->
           </table>
         </div>
